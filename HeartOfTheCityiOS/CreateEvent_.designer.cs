@@ -11,8 +11,11 @@ using UIKit;
 
 namespace HeartOfTheCityiOS
 {
-    [Register ("ViewController")]
-    partial class ViewController
+    [Register ("CreateEvent")]
+    partial class CreateEvent_
     {
+        void ReleaseDesignerOutlets ()
+        {
+        }
     }
 }
