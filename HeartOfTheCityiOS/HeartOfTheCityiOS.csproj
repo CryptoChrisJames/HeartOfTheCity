@@ -122,6 +122,7 @@
     <InterfaceDefinition Include="Main.storyboard" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="Info.plist">
       <SubType>Designer</SubType>
     </None>
@@ -141,9 +142,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HOTCLibrary\HOTCLibrary.csproj">
+    <ProjectReference Include="..\HOTCLibrary\HOTCiOSLibrary.csproj">
       <Project>{e71f3053-056c-4381-9638-048ed73bdff6}</Project>
-      <Name>HOTCLibrary</Name>
+      <Name>HOTCiOSLibrary</Name>
       <IsAppExtension>false</IsAppExtension>
       <IsWatchApp>false</IsWatchApp>
     </ProjectReference>
