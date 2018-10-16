@@ -1,11 +1,12 @@
 ﻿using Foundation;
 using System;
 using UIKit;
-using HOTCLibrary;
+using HOTCiOSLibrary;
 using RestSharp;
-using HOTCLibrary.Services;
+using HOTCiOSLibrary.Services;
 using MapKit;
 using System.Net.Http;
+using CoreGraphics;
 
 namespace HeartOfTheCityiOS
 {
@@ -15,19 +16,16 @@ namespace HeartOfTheCityiOS
         private LocationService _locationservice { get; set; }
         private MKMapView _map { get; set; }
         public HttpClient _client { get; set; }
-        public UINavigationController _navigationcontroller { get; set; }
 
-        public MapViewController (IntPtr handle) : base (handle)
+        public MapViewController (HttpClient client) : base ()
         {
+            _client = client;
         }
 
         public override void ViewDidLoad ()
         {
             base.ViewDidLoad ();
-            UINavigationController navContr = new UINavigationController();
-            _navigationcontroller = navContr;
-            var client = new HttpClient();
-            _client = client;
+            //Services
             MapService MapService = new MapService(_client);
             LocationService locationService = new LocationService(new CoreLocation.CLLocationManager());
             locationService.CurrentLocation(locationService.LocationManager);
@@ -37,6 +35,27 @@ namespace HeartOfTheCityiOS
             _map = map;
             MapService.CenterToCurrentLocation(_map, _locationservice);
             View.AddSubview(_map);
+
+            //Create UI
+            var LocationButton = new UIButton(UIButtonType.System);
+            LocationButton.Frame = new CGRect(25, 25, 300, 150);
+            LocationButton.SetTitle("Location", UIControlState.Normal);
+
+            var CreateEvent = new UIButton(UIButtonType.System);
+            CreateEvent.Frame = new CGRect(25, 500, 300, 150);
+            CreateEvent.SetTitle("Create", UIControlState.Normal);
+
+            LocationButton.TouchUpInside += (object sender, EventArgs e) =>
+            {
+                _mapservice.ZoomToCurrentLocation(_map, _locationservice);
+            };
+
+            CreateEvent.TouchUpInside += (object sender, EventArgs e) =>
+            {
+                var CreateEventController = new CreateEvent_(_client);
+                this.NavigationController.PushViewController(CreateEventController, true);
+            };
+
             View.AddSubview(LocationButton);
             View.AddSubview(CreateEvent);
         }
@@ -51,6 +70,5 @@ namespace HeartOfTheCityiOS
         {
             _mapservice.ZoomToCurrentLocation(_map, _locationservice);
         }
-
     }
 }

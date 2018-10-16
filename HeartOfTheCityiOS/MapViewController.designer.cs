@@ -16,15 +16,7 @@ namespace HeartOfTheCityiOS
     {
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UIButton CreateEvent { get; set; }
-
-        [Outlet]
-        [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UIButton LocationButton { get; set; }
-
-        [Action ("CreateEvent_TouchUpInside:")]
-        [GeneratedCode ("iOS Designer", "1.0")]
-        partial void CreateEvent_TouchUpInside (UIKit.UIButton sender);
 
         [Action ("LocationButton_TouchUpInside:")]
         [GeneratedCode ("iOS Designer", "1.0")]
@@ -32,11 +24,6 @@ namespace HeartOfTheCityiOS
 
         void ReleaseDesignerOutlets ()
         {
-            if (CreateEvent != null) {
-                CreateEvent.Dispose ();
-                CreateEvent = null;
-            }
-
             if (LocationButton != null) {
                 LocationButton.Dispose ();
                 LocationButton = null;

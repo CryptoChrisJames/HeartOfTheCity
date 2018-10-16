@@ -7,7 +7,7 @@ using Foundation;
 using MapKit;
 using UIKit;
 
-namespace HOTCLibrary.Services
+namespace HOTCiOSLibrary.Services
 {
     public class LocationService
     {

@@ -1,5 +1,7 @@
 ﻿using Foundation;
+using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using UIKit;
 
 namespace HeartOfTheCityiOS
@@ -10,7 +12,7 @@ namespace HeartOfTheCityiOS
     public class AppDelegate : UIApplicationDelegate
     {
         // class-level declarations
-
+        public HttpClient appClient; 
         public override UIWindow Window
         {
             get;
@@ -19,6 +21,15 @@ namespace HeartOfTheCityiOS
 
         public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions)
         {
+            appClient = new HttpClient();
+            appClient.BaseAddress = new Uri("http://98.240.17.111:77");
+            appClient.DefaultRequestHeaders.Accept.Clear();
+            appClient.DefaultRequestHeaders.Accept.Add(
+                new MediaTypeWithQualityHeaderValue("application/json"));
+            Window = new UIWindow(UIScreen.MainScreen.Bounds);
+            var nav = new UINavigationController(new MapViewController(appClient));
+            Window.RootViewController = nav;
+            Window.MakeKeyAndVisible();
             return true;
         }
 

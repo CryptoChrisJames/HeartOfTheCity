@@ -7,8 +7,9 @@ using CoreLocation;
 using UIKit;
 using MapKit;
 using System.Net.Http;
+using HOTCiOSLibrary.Services;
 
-namespace HOTCLibrary
+namespace HOTCiOSLibrary
 {
     public class MapService
     {
@@ -26,7 +27,7 @@ namespace HOTCLibrary
             return map;
         }
 
-        public void CenterToCurrentLocation(MKMapView map, Services.LocationService LS)
+        public void CenterToCurrentLocation(MKMapView map, LocationService LS)
         {
             var LM = LS.LocationManager;
             var target = new CLLocationCoordinate2D
@@ -36,7 +37,7 @@ namespace HOTCLibrary
             map.SetRegion(currentregion, animated: false);
         }
 
-        public void ZoomToCurrentLocation(MKMapView map, Services.LocationService LS)
+        public void ZoomToCurrentLocation(MKMapView map, LocationService LS)
         {
             var LM = LS.LocationManager;
             var target = new CLLocationCoordinate2D(LM.Location.Coordinate.Latitude, LM.Location.Coordinate.Longitude);

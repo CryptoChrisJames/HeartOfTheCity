@@ -6,7 +6,7 @@ using System.Text;
 using Foundation;
 using UIKit;
 
-namespace HOTCLibrary.Models
+namespace HOTCiOSLibrary.Models
 {
     public class Event
     {
