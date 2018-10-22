@@ -11,15 +11,12 @@ namespace HOTCiOSLibrary.Services
 {
     public class LocationService
     {
-        protected CLLocationManager _locationManager;
+        public CLLocationManager _locationManager { get; set; }
 
         public LocationService(CLLocationManager locationManager)
         {
             _locationManager = locationManager;
-            _locationManager = new CLLocationManager
-            {
-                PausesLocationUpdatesAutomatically = false
-            };
+            _locationManager.PausesLocationUpdatesAutomatically = false;
 
             if (UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
             {

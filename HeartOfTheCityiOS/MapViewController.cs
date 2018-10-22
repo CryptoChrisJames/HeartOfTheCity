@@ -28,7 +28,7 @@ namespace HeartOfTheCityiOS
             //Services
             MapService MapService = new MapService(_client);
             LocationService locationService = new LocationService(new CoreLocation.CLLocationManager());
-            locationService.CurrentLocation(locationService.LocationManager);
+            locationService.CurrentLocation(locationService._locationManager);
             _mapservice = MapService;
             _locationservice = locationService;
             var map = _mapservice.GetMapView();
