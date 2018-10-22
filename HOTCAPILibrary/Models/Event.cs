@@ -5,6 +5,11 @@ using System.Text;
 
 namespace HOTCLibrary.Models
 {
+    public enum USStates
+    {
+
+    }
+
     public class Event
     {
         public int ID { get; set; }

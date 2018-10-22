@@ -47,10 +47,10 @@ namespace HOTCiOSLibrary.Services
             locationManager.StartUpdatingLocation();
         }
 
-        public CLLocationManager LocationManager
-        {
-            get { return _locationManager; }
-        }
+        //public CLLocationManager LocationManager
+        //{
+        //    get { return _locationManager; }
+        //}
         
     }
 }
