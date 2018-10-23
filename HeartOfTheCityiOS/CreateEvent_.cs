@@ -2,8 +2,10 @@
 using HOTCiOSLibrary.Models;
 using System;
 using System.Net.Http;
+using System.Collections.Generic;
 using UIKit;
 using CoreGraphics;
+using HOTCLibrary.Services;
 
 namespace HeartOfTheCityiOS
 {
@@ -75,7 +77,6 @@ namespace HeartOfTheCityiOS
 
             //Finializing the layout.
 
-            //View.Add(stackView);
             scrollView.ContentSize = stackView.Frame.Size;
             scrollView.AddConstraint(stackView.TopAnchor.ConstraintEqualTo(scrollView.TopAnchor));
             scrollView.AddConstraint(stackView.BottomAnchor.ConstraintEqualTo(scrollView.BottomAnchor));
@@ -90,15 +91,19 @@ namespace HeartOfTheCityiOS
             var g = new UITapGestureRecognizer(() => View.EndEditing(true));
             View.AddGestureRecognizer(g);
 
+            //Button actions. 
             SubmitButton.TouchUpInside += (object sender, EventArgs e) =>
             {
+                Event userEvent = new Event();
+                userEvent.Address = AddressField.Text;
+                userEvent.EventName = NameField.Text;
+                userEvent.City = CityFiled.Text;
+                userEvent.ZipCode = int.Parse(ZipField.Text);
+
+                EventService ES = new EventService(_client);
+                ES.CreateNewEvent(userEvent);
                 
             };
-            //View.AddSubview(NameField);
-            //View.AddSubview(AddressField);
-            //View.AddSubview(CityFiled);
-            //View.AddSubview(ZipField);
-            //View.AddSubview(SubmitButton);
         }
     }
 }

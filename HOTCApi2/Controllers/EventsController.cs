@@ -9,11 +9,11 @@ namespace HOTCApi.Controllers
 {
     [Produces("application/json")]
     [Route("api/[controller]")]
-    public class EventController : Controller
+    public class EventsController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public EventController(ApplicationDbContext context)
+        public EventsController(ApplicationDbContext context)
         {
             _context = context;
         }

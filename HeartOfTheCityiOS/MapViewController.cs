@@ -7,6 +7,7 @@ using HOTCiOSLibrary.Services;
 using MapKit;
 using System.Net.Http;
 using CoreGraphics;
+using HOTCLibrary.Services;
 
 namespace HeartOfTheCityiOS
 {
@@ -16,6 +17,7 @@ namespace HeartOfTheCityiOS
         private LocationService _locationservice { get; set; }
         private MKMapView _map { get; set; }
         public HttpClient _client { get; set; }
+        private EventService _eventservice { get; set; }
 
         public MapViewController (HttpClient client) : base ()
         {
@@ -26,11 +28,13 @@ namespace HeartOfTheCityiOS
         {
             base.ViewDidLoad ();
             //Services
+            EventService eventservice = new EventService(_client);
             MapService MapService = new MapService(_client);
             LocationService locationService = new LocationService(new CoreLocation.CLLocationManager());
             locationService.CurrentLocation(locationService._locationManager);
             _mapservice = MapService;
             _locationservice = locationService;
+            _eventservice = eventservice;
             var map = _mapservice.GetMapView();
             _map = map;
             MapService.CenterToCurrentLocation(_map, _locationservice);
