@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using Foundation;
-using UIKit;
-
-namespace HOTCiOSLibrary.Models
+namespace HOTCLibrary.Models
 {
+    public enum USStates
+    {
+
+    }
+
     public class Event
     {
         public int ID { get; set; }

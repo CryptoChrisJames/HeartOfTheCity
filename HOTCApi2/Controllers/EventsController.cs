@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using HOTCAPILibrary.Data;
+using HOTCAPILibrary.DTOs;
+using HOTCAPILibrary.Managers;
+using HOTCLibrary.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HOTCApi.Controllers
@@ -12,10 +15,13 @@ namespace HOTCApi.Controllers
     public class EventsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private EventsManager _EM;
 
         public EventsController(ApplicationDbContext context)
         {
             _context = context;
+            _EM = new EventsManager(_context);
+
         }
 
         // GET api/values
@@ -34,8 +40,11 @@ namespace HOTCApi.Controllers
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody]string value)
-        {            
+        public async Task<LocationDTO> Post([FromBody]Event newEvent)
+        {
+            await _EM.CreateNewEvent(newEvent);
+            var newEventLocation = new LocationDTO();
+            return newEventLocation;
         }
 
         // PUT api/values/5
