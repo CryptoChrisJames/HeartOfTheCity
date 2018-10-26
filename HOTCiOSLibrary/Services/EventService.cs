@@ -9,6 +9,7 @@ using HOTCiOSLibrary.Models;
 using UIKit;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
+using HOTCAPILibrary.DTOs;
 
 namespace HOTCiOSLibrary.Services
 {
@@ -21,13 +22,15 @@ namespace HOTCiOSLibrary.Services
             _client = client;
         }
 
-        public void CreateNewEvent(Event userEvent)
+        public LocationDTO CreateNewEvent(Event userEvent)
         {
             var EventJson = JsonConvert.SerializeObject(userEvent);
             _client.DefaultRequestHeaders.Accept.Clear();
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             var content = new StringContent(EventJson, Encoding.UTF8, "application/json");
-            var respone = _client.PostAsync("api/Events", content);
+            var respone = _client.PostAsync("events/", content);
+            LocationDTO EventLocation = new LocationDTO();
+            return EventLocation;
 
         }
     }

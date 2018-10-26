@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using UIKit;
 using CoreGraphics;
 using HOTCiOSLibrary.Services;
+using HOTCAPILibrary.DTOs;
 
 namespace HeartOfTheCityiOS
 {
@@ -101,7 +102,7 @@ namespace HeartOfTheCityiOS
                 userEvent.ZipCode = int.Parse(ZipField.Text);
 
                 EventService ES = new EventService(_client);
-                ES.CreateNewEvent(userEvent);
+                LocationDTO EventLocation = ES.CreateNewEvent(userEvent);
                 
             };
         }

@@ -22,7 +22,7 @@ namespace HeartOfTheCityiOS
         public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions)
         {
             appClient = new HttpClient();
-            appClient.BaseAddress = new Uri("http://98.240.17.111:77");
+            appClient.BaseAddress = new Uri("http://98.240.17.111/api/");
             appClient.DefaultRequestHeaders.Accept.Clear();
             appClient.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
