@@ -10,7 +10,7 @@ using UIKit;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 
-namespace HOTCLibrary.Services
+namespace HOTCiOSLibrary.Services
 {
     public class EventService
     {

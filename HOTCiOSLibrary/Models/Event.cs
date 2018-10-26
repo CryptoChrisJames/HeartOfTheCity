@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace HOTCLibrary.Models
+namespace HOTCiOSLibrary.Models
 {
     public enum USStates
     {

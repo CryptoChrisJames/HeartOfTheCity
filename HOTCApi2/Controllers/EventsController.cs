@@ -42,8 +42,8 @@ namespace HOTCApi.Controllers
         [HttpPost]
         public async Task<LocationDTO> Post([FromBody]Event newEvent)
         {
-            await _EM.CreateNewEvent(newEvent);
             var newEventLocation = new LocationDTO();
+            newEventLocation = await _EM.CreateNewEvent(newEvent);
             return newEventLocation;
         }
 

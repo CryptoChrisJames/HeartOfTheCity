@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.Collections.Generic;
 using UIKit;
 using CoreGraphics;
-using HOTCLibrary.Services;
+using HOTCiOSLibrary.Services;
 
 namespace HeartOfTheCityiOS
 {

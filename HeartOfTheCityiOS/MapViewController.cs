@@ -7,7 +7,6 @@ using HOTCiOSLibrary.Services;
 using MapKit;
 using System.Net.Http;
 using CoreGraphics;
-using HOTCLibrary.Services;
 
 namespace HeartOfTheCityiOS
 {

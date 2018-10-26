@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using HOTCAPILibrary.Data;
+using HOTCAPILibrary.DTOs;
 using HOTCLibrary.Models;
 
 namespace HOTCAPILibrary.Managers
@@ -16,10 +17,14 @@ namespace HOTCAPILibrary.Managers
             _context = context;
         }
 
-        public async Task<string> CreateNewEvent(Event newEvent)
+        public async Task<LocationDTO> CreateNewEvent(Event newEvent)
         {
             await _context.Events.AddAsync(newEvent);
-            return "ok";
+            await _context.SaveChangesAsync();
+            var location = new LocationDTO();
+            location.Lat = newEvent.Lat;
+            location.Long = newEvent.Long;
+            return location;
         }
     }
 }
