@@ -5,8 +5,10 @@ using System.Net.Http;
 using System.Collections.Generic;
 using UIKit;
 using CoreGraphics;
+using CoreLocation;
 using HOTCiOSLibrary.Services;
 using HOTCAPILibrary.DTOs;
+using System.Threading.Tasks;
 
 namespace HeartOfTheCityiOS
 {
@@ -62,6 +64,28 @@ namespace HeartOfTheCityiOS
             {
                 Frame = new CGRect(25, 70, 300, 30)
             };
+
+            //UIPickerView DatePicker = new UIPickerView(new CGRect(
+            //        UIScreen.MainScreen.Bounds.X - UIScreen.MainScreen.Bounds.Width,
+            //        UIScreen.MainScreen.Bounds.Height - 230,
+            //        UIScreen.MainScreen.Bounds.Width,
+            //        180
+            //        ));
+            UIDatePicker DatePicker = new UIDatePicker(new CGRect(
+                    UIScreen.MainScreen.Bounds.X - UIScreen.MainScreen.Bounds.Width,
+                    UIScreen.MainScreen.Bounds.Height - 230,
+                    UIScreen.MainScreen.Bounds.Width,
+                    180));
+            var calendar = new NSCalendar(NSCalendarType.Gregorian);
+            calendar.TimeZone = NSTimeZone.LocalTimeZone;
+            var currentDate = NSDate.Now;
+            var components = new NSDateComponents();
+            components.Year = -60;
+            NSDate minDate = calendar.DateByAddingComponents(components, NSDate.Now, NSCalendarOptions.None);
+            DatePicker.MinimumDate = currentDate;
+            DatePicker.Mode = UIDatePickerMode.DateAndTime;
+            
+
             SubmitButton.SetTitle("Submit Event", UIControlState.Normal);
 
             //Start putting the components together to build the view.
@@ -70,6 +94,7 @@ namespace HeartOfTheCityiOS
             stackView.AddArrangedSubview(AddressField);
             stackView.AddArrangedSubview(CityFiled);
             stackView.AddArrangedSubview(ZipField);
+            stackView.AddArrangedSubview(DatePicker);
             stackView.AddArrangedSubview(SubmitButton);
 
             scrollView.AddSubview(stackView);
@@ -92,17 +117,33 @@ namespace HeartOfTheCityiOS
             var g = new UITapGestureRecognizer(() => View.EndEditing(true));
             View.AddGestureRecognizer(g);
 
-            //Button actions. 
-            SubmitButton.TouchUpInside += (object sender, EventArgs e) =>
+            //Button function #1: submitting the event and presenting the submission to the user.
+            SubmitButton.TouchUpInside += async (object sender, EventArgs e) =>
             {
+                //Populate the Event model. 
                 Event userEvent = new Event();
                 userEvent.Address = AddressField.Text;
                 userEvent.EventName = NameField.Text;
                 userEvent.City = CityFiled.Text;
+                //userEvent.State
+                //userEvent.Country
                 userEvent.ZipCode = int.Parse(ZipField.Text);
-
+                userEvent.DateOfEvent = (DateTime)DatePicker.Date;
+                var geoCoder = new CLGeocoder();
+                var location = new CLLocation();
+                string worldAddress = userEvent.Address + ", " + userEvent.City + ", ";
+                var placemarks = geoCoder.GeocodeAddressAsync(userEvent.Address);
+                await placemarks.ContinueWith((addresses) =>
+                {
+                    foreach (var address in addresses.Result)
+                    {
+                        location = address.Location;
+                    }
+                });
+                userEvent.Lat = location.Coordinate.Latitude;
+                userEvent.Long = location.Coordinate.Longitude;
                 EventService ES = new EventService(_client);
-                LocationDTO EventLocation = ES.CreateNewEvent(userEvent);
+                LocationDTO EventLocation = await ES.CreateNewEvent(userEvent);
                 
             };
         }

@@ -10,6 +10,7 @@ using UIKit;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using HOTCAPILibrary.DTOs;
+using System.Threading.Tasks;
 
 namespace HOTCiOSLibrary.Services
 {
@@ -22,14 +23,14 @@ namespace HOTCiOSLibrary.Services
             _client = client;
         }
 
-        public LocationDTO CreateNewEvent(Event userEvent)
+        public async Task<LocationDTO> CreateNewEvent(Event userEvent)
         {
             var EventJson = JsonConvert.SerializeObject(userEvent);
-            _client.DefaultRequestHeaders.Accept.Clear();
-            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             var content = new StringContent(EventJson, Encoding.UTF8, "application/json");
-            var respone = _client.PostAsync("events/", content);
-            LocationDTO EventLocation = new LocationDTO();
+            var response = _client.PostAsync("events/", content).Result;
+            HttpContent responseContent = response.Content;
+            string result = await responseContent.ReadAsStringAsync();
+            LocationDTO EventLocation = JsonConvert.DeserializeObject<LocationDTO>(result);
             return EventLocation;
 
         }
