@@ -128,6 +128,7 @@ namespace HeartOfTheCityiOS
                 //userEvent.State
                 //userEvent.Country
                 userEvent.ZipCode = int.Parse(ZipField.Text);
+                DateTime.SpecifyKind((DateTime)DatePicker.Date, DateTimeKind.Utc).ToLocalTime();
                 userEvent.DateOfEvent = (DateTime)DatePicker.Date;
                 var geoCoder = new CLGeocoder();
                 var location = new CLLocation();
