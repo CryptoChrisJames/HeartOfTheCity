@@ -412,7 +412,7 @@ namespace HOTCiOSLibrary.Models
 		public string City { get; set; }
 		public USStates State { get; set; }
 		public DateTime DateOfEvent { get; set; }
-		public string PictureFile { get; set; }
+		public byte[] Picture { get; set; }
 		public double Lat { get; set; }
 		public double Long { get; set; }
 		public string Address { get; set; }

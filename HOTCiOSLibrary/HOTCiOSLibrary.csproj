@@ -219,6 +219,7 @@
     <Reference Include="Xamarin.iOS" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Logic\" />
     <Folder Include="Resources\" />
   </ItemGroup>
   <ItemGroup>

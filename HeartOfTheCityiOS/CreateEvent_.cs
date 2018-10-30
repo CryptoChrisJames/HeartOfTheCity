@@ -9,18 +9,24 @@ using CoreLocation;
 using HOTCiOSLibrary.Services;
 using HOTCAPILibrary.DTOs;
 using System.Threading.Tasks;
+using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace HeartOfTheCityiOS
 {
     public partial class CreateEvent_ : UIViewController
     {
-        public Event _newEvent { get; set; }
+        public Event userEvent { get; set; }
         public HttpClient _client { get; set; }
+        public UIImage userImage {get;set;}
+
+        UIImagePickerController galleryImagePicker;
+        UIImagePickerController cameraImagePicker;
 
         public CreateEvent_ (HttpClient client) : base ()
         {
             _client = client;
-            _newEvent = new Event();
+            userEvent = new Event();
         }
 
         public override void ViewDidLoad()
@@ -62,7 +68,11 @@ namespace HeartOfTheCityiOS
             };
             var SubmitButton = new UIButton(UIButtonType.System)
             {
-                Frame = new CGRect(25, 70, 300, 30)
+                Frame = new CGRect(25, 90, 300, 30)
+            };
+            var GetImage = new UIButton(UIButtonType.System)
+            {
+                Frame = new CGRect(25, 60, 300, 30)
             };
 
             //UIPickerView DatePicker = new UIPickerView(new CGRect(
@@ -87,6 +97,8 @@ namespace HeartOfTheCityiOS
             
 
             SubmitButton.SetTitle("Submit Event", UIControlState.Normal);
+            GetImage.SetTitle("Pick An Image", UIControlState.Normal);
+            
 
             //Start putting the components together to build the view.
 
@@ -95,6 +107,7 @@ namespace HeartOfTheCityiOS
             stackView.AddArrangedSubview(CityFiled);
             stackView.AddArrangedSubview(ZipField);
             stackView.AddArrangedSubview(DatePicker);
+            stackView.AddArrangedSubview(GetImage);
             stackView.AddArrangedSubview(SubmitButton);
 
             scrollView.AddSubview(stackView);
@@ -117,11 +130,11 @@ namespace HeartOfTheCityiOS
             var g = new UITapGestureRecognizer(() => View.EndEditing(true));
             View.AddGestureRecognizer(g);
 
+
             //Button function #1: submitting the event and presenting the submission to the user.
             SubmitButton.TouchUpInside += async (object sender, EventArgs e) =>
             {
                 //Populate the Event model. 
-                Event userEvent = new Event();
                 userEvent.Address = AddressField.Text;
                 userEvent.EventName = NameField.Text;
                 userEvent.City = CityFiled.Text;
@@ -143,10 +156,116 @@ namespace HeartOfTheCityiOS
                 });
                 userEvent.Lat = location.Coordinate.Latitude;
                 userEvent.Long = location.Coordinate.Longitude;
+                userEvent.Picture = ConvertImageToBytes();
+
+
                 EventService ES = new EventService(_client);
                 LocationDTO EventLocation = await ES.CreateNewEvent(userEvent);
                 
             };
+
+            //Button function #2: opening Image Picker
+            GetImage.TouchUpInside += (object sender, EventArgs e) =>
+            {
+                ShowSelectPicPopup();
+            };
+            
         }
+
+        private byte[] ConvertImageToBytes()
+        {
+            NSData imagedata = userImage.AsPNG();
+            byte[] ByteArray = new byte[imagedata.Length];
+            Marshal.Copy(imagedata.Bytes, ByteArray, 0, Convert.ToInt32(imagedata.Length));
+            return ByteArray;
+        }
+
+        void ShowSelectPicPopup()
+        {
+            var actionSheetAlert = UIAlertController.Create("Select picture",
+                                                       "Complete action using", UIAlertControllerStyle.ActionSheet);
+            actionSheetAlert.AddAction(UIAlertAction.Create("Gallery",
+                                              UIAlertActionStyle.Default, (action) => HandleGalleryButtonClick()));
+            actionSheetAlert.AddAction(UIAlertAction.Create("Cancel", UIAlertActionStyle.Cancel,
+                                              (action) => Console.WriteLine("Cancel button pressed.")));
+            // Required for iPad - You must specify a source for the Action Sheet since it is
+            // displayed as a popover
+            var presentationPopover = actionSheetAlert.PopoverPresentationController;
+            if (presentationPopover != null)
+            {
+                presentationPopover.SourceView = View;
+                presentationPopover.PermittedArrowDirections = UIPopoverArrowDirection.Up;
+            }
+
+            PresentViewController(actionSheetAlert, true, null);
+        }
+
+        void HandleGalleryButtonClick()
+        {
+            if (galleryImagePicker == null)
+            {
+                galleryImagePicker = new UIImagePickerController();
+                galleryImagePicker.SourceType = UIImagePickerControllerSourceType.PhotoLibrary;
+                galleryImagePicker.MediaTypes = UIImagePickerController.AvailableMediaTypes(UIImagePickerControllerSourceType.PhotoLibrary);
+                galleryImagePicker.FinishedPickingMedia += Handle_FinishedPickingMedia;
+                galleryImagePicker.Canceled += Handle_Canceled;
+            }
+            PresentViewController(galleryImagePicker, true, () => { });
+        }
+
+        void Handle_Canceled(object sender, EventArgs e)
+        {
+            galleryImagePicker.DismissViewController(true, () => { });
+        }
+
+        protected void Handle_FinishedPickingMedia(object sender, UIImagePickerMediaPickedEventArgs e)
+        {
+            // determine what was selected, video or image
+            bool isImage = false;
+            switch (e.Info[UIImagePickerController.MediaType].ToString())
+            {
+                case "public.image":
+                    Console.WriteLine("Image selected");
+                    isImage = true;
+                    break;
+                case "public.video":
+                    Console.WriteLine("Video selected");
+                    break;
+            }
+
+            // get common info (shared between images and video)
+            var referenceURL = e.Info[new NSString("UIImagePickerControllerReferenceUrl")] as NSUrl;
+            if (referenceURL != null)
+                Console.WriteLine("Url:" + referenceURL);
+
+            // if it was an image, get the other image info
+            if (isImage)
+            {
+                // get the original image
+                var originalImage = e.Info[UIImagePickerController.OriginalImage] as UIImage;
+                if (originalImage != null)
+                {
+                    // do something with the image
+                    userImage = originalImage;
+                }
+            }
+            else
+            { // if it's a video
+              // get video url
+                var mediaURL = e.Info[UIImagePickerController.MediaURL] as NSUrl;
+                if (mediaURL != null)
+                {
+                    Console.WriteLine(mediaURL);
+                }
+            }
+            // dismiss the picker
+            galleryImagePicker.DismissViewController(true, () => { });
+        }
+
+        void Handle_CameraCanceled(object sender, EventArgs e)
+        {
+            cameraImagePicker.DismissViewController(true, () => { });
+        }
+
     }
 }
