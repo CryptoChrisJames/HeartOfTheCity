@@ -47,6 +47,13 @@ namespace HOTCApi.Controllers
             return newEventLocation;
         }
 
+        [HttpPut]
+        [Route("events/image/{EventID}")]
+        public async Task<string> AddImageToEvent(int EventID)
+        {
+            return "Ok";
+        }
+
         // PUT api/values/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody]string value)

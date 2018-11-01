@@ -156,11 +156,16 @@ namespace HeartOfTheCityiOS
                 });
                 userEvent.Lat = location.Coordinate.Latitude;
                 userEvent.Long = location.Coordinate.Longitude;
-                userEvent.Picture = ConvertImageToBytes();
-
 
                 EventService ES = new EventService(_client);
-                LocationDTO EventLocation = await ES.CreateNewEvent(userEvent);
+                if(userImage != null)
+                {
+                    LocationDTO EventLocation = await ES.CreateNewEvent(userEvent, userImage);
+                }
+                else
+                {
+                    LocationDTO EventLocation = await ES.CreateNewEvent(userEvent);
+                }
                 
             };
 
@@ -170,14 +175,6 @@ namespace HeartOfTheCityiOS
                 ShowSelectPicPopup();
             };
             
-        }
-
-        private byte[] ConvertImageToBytes()
-        {
-            NSData imagedata = userImage.AsPNG();
-            byte[] ByteArray = new byte[imagedata.Length];
-            Marshal.Copy(imagedata.Bytes, ByteArray, 0, Convert.ToInt32(imagedata.Length));
-            return ByteArray;
         }
 
         void ShowSelectPicPopup()

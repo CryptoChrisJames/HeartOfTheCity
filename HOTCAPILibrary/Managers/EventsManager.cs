@@ -24,6 +24,7 @@ namespace HOTCAPILibrary.Managers
             var location = new LocationDTO();
             location.Lat = newEvent.Lat;
             location.Long = newEvent.Long;
+            location.EventID = newEvent.ID;
             return location;
         }
     }
