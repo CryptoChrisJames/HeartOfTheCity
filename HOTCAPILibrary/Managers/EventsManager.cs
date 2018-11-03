@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HOTCAPILibrary.Data;
@@ -26,6 +27,15 @@ namespace HOTCAPILibrary.Managers
             location.Long = newEvent.Long;
             location.EventID = newEvent.ID;
             return location;
+        }
+
+        public void AttachImage(byte[] byteArray, int eventID)
+        {
+            Event currentEvent = new Event();
+            currentEvent = _context.Events.Where(e => e.ID == eventID).FirstOrDefault();
+            currentEvent.Picture = byteArray;
+            _context.Events.Update(currentEvent);
+            _context.SaveChanges();
         }
     }
 }

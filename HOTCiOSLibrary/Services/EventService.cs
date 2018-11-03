@@ -53,11 +53,14 @@ namespace HOTCiOSLibrary.Services
         {
             var IC = new ImageConverter();
             var ImageByteArray = IC.ConvertImageToBytes(userImage);
-            var requestContent = new MultipartFormDataContent();
-            ByteArrayContent content = new ByteArrayContent(ImageByteArray);
-            requestContent.Add(content);
-            var result = _client.PostAsync("events/image/" + EventID, content);
+            var ImageJson = JsonConvert.SerializeObject(ImageByteArray);
+            var content = new StringContent(ImageJson, Encoding.UTF8, "applcaition.json");
+            var response = _client.PostAsync("events/image" + EventID, content);
 
+            //var requestContent = new MultipartFormDataContent();
+            //ByteArrayContent content = new ByteArrayContent(ImageByteArray);
+            //requestContent.Add(content);
+            //var result = _client.PostAsync("events/image/" + EventID, content);
         }
     }
 }

@@ -21,7 +21,6 @@ namespace HeartOfTheCityiOS
         public UIImage userImage {get;set;}
 
         UIImagePickerController galleryImagePicker;
-        UIImagePickerController cameraImagePicker;
 
         public CreateEvent_ (HttpClient client) : base ()
         {
@@ -258,11 +257,5 @@ namespace HeartOfTheCityiOS
             // dismiss the picker
             galleryImagePicker.DismissViewController(true, () => { });
         }
-
-        void Handle_CameraCanceled(object sender, EventArgs e)
-        {
-            cameraImagePicker.DismissViewController(true, () => { });
-        }
-
     }
 }

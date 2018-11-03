@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using HOTCAPILibrary.Data;
 using HOTCAPILibrary.DTOs;
 using HOTCAPILibrary.Managers;
 using HOTCLibrary.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http;
+using System.Web;
 
 namespace HOTCApi.Controllers
 {
@@ -48,10 +51,10 @@ namespace HOTCApi.Controllers
         }
 
         [HttpPut]
-        [Route("events/image/{EventID}")]
-        public async Task<string> AddImageToEvent(int EventID)
+        [Route("image/{EventID}")]
+        public void AddImageToEvent([FromBody]byte[] ByteArray, int EventID)
         {
-            return "Ok";
+            _EM.AttachImage(ByteArray, EventID);
         }
 
         // PUT api/values/5
