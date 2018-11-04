@@ -225,6 +225,7 @@
     <Compile Include="DTOs\LocationDTO.cs" />
     <Compile Include="Logic\ImageConverter.cs" />
     <Compile Include="Models\Event.cs" />
+    <Compile Include="Models\ViewModels\StatesViewModel.cs" />
     <Compile Include="Services\EventService.cs" />
     <Compile Include="Services\LocationService.cs" />
     <Compile Include="Services\MapService.cs" />

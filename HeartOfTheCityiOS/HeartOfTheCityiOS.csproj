@@ -146,6 +146,7 @@
     <Compile Include="MapViewController.designer.cs">
       <DependentUpon>MapViewController.cs</DependentUpon>
     </Compile>
+    <Compile Include="SubmittedEvent.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HOTCiOSLibrary\HOTCiOSLibrary.csproj">

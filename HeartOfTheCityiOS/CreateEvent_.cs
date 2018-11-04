@@ -11,6 +11,7 @@ using HOTCAPILibrary.DTOs;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Runtime.InteropServices;
+using HOTCLibrary.Models.ViewModels;
 
 namespace HeartOfTheCityiOS
 {
@@ -18,7 +19,7 @@ namespace HeartOfTheCityiOS
     {
         public Event userEvent { get; set; }
         public HttpClient _client { get; set; }
-        public UIImage userImage {get;set;}
+        public UIImage userImage { get;set; }
 
         UIImagePickerController galleryImagePicker;
 
@@ -37,7 +38,7 @@ namespace HeartOfTheCityiOS
             var stackView = new UIStackView
             {
                 Axis = UILayoutConstraintAxis.Vertical,
-                Alignment = UIStackViewAlignment.Fill,
+                Alignment = UIStackViewAlignment.Center,
                 Distribution = UIStackViewDistribution.EqualSpacing,
                 Spacing = 10,
                 TranslatesAutoresizingMaskIntoConstraints = false
@@ -60,6 +61,16 @@ namespace HeartOfTheCityiOS
                 Frame = new CGRect(25, 40, 35, 15),
                 Placeholder = "City"
             };
+            var StateField = new UITextField
+            {
+                Frame = new CGRect(25, 30, 35, 15),
+                Placeholder = "State"
+            };
+            var CountryField = new UITextField
+            {
+                Frame = new CGRect(25, 30, 35, 15),
+                Placeholder = "Country"
+            };
             var ZipField = new UITextField
             {
                 Frame = new CGRect(25, 50, 35, 15),
@@ -74,12 +85,6 @@ namespace HeartOfTheCityiOS
                 Frame = new CGRect(25, 60, 300, 30)
             };
 
-            //UIPickerView DatePicker = new UIPickerView(new CGRect(
-            //        UIScreen.MainScreen.Bounds.X - UIScreen.MainScreen.Bounds.Width,
-            //        UIScreen.MainScreen.Bounds.Height - 230,
-            //        UIScreen.MainScreen.Bounds.Width,
-            //        180
-            //        ));
             UIDatePicker DatePicker = new UIDatePicker(new CGRect(
                     UIScreen.MainScreen.Bounds.X - UIScreen.MainScreen.Bounds.Width,
                     UIScreen.MainScreen.Bounds.Height - 230,
@@ -93,7 +98,6 @@ namespace HeartOfTheCityiOS
             NSDate minDate = calendar.DateByAddingComponents(components, NSDate.Now, NSCalendarOptions.None);
             DatePicker.MinimumDate = currentDate;
             DatePicker.Mode = UIDatePickerMode.DateAndTime;
-            
 
             SubmitButton.SetTitle("Submit Event", UIControlState.Normal);
             GetImage.SetTitle("Pick An Image", UIControlState.Normal);
@@ -104,6 +108,8 @@ namespace HeartOfTheCityiOS
             stackView.AddArrangedSubview(NameField);
             stackView.AddArrangedSubview(AddressField);
             stackView.AddArrangedSubview(CityFiled);
+            stackView.AddArrangedSubview(StateField);
+            stackView.AddArrangedSubview(CountryField);
             stackView.AddArrangedSubview(ZipField);
             stackView.AddArrangedSubview(DatePicker);
             stackView.AddArrangedSubview(GetImage);
@@ -137,8 +143,8 @@ namespace HeartOfTheCityiOS
                 userEvent.Address = AddressField.Text;
                 userEvent.EventName = NameField.Text;
                 userEvent.City = CityFiled.Text;
-                //userEvent.State
-                //userEvent.Country
+                userEvent.State = StateField.Text;
+                userEvent.Country = CountryField.Text;
                 userEvent.ZipCode = int.Parse(ZipField.Text);
                 DateTime.SpecifyKind((DateTime)DatePicker.Date, DateTimeKind.Utc).ToLocalTime();
                 userEvent.DateOfEvent = (DateTime)DatePicker.Date;
@@ -160,11 +166,18 @@ namespace HeartOfTheCityiOS
                 if(userImage != null)
                 {
                     LocationDTO EventLocation = await ES.CreateNewEvent(userEvent, userImage);
+                    var ShowEvent = new SubmittedEvent(EventLocation, _client);
+                    this.NavigationController.PopViewController(true);
+                    this.NavigationController.PushViewController(ShowEvent, true);
                 }
                 else
                 {
                     LocationDTO EventLocation = await ES.CreateNewEvent(userEvent);
+                    var ShowEvent = new SubmittedEvent(EventLocation, _client);
+                    this.NavigationController.PopViewController(true);
+                    this.NavigationController.PushViewController(ShowEvent, true);
                 }
+
                 
             };
 

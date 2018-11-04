@@ -38,29 +38,18 @@ namespace HOTCiOSLibrary.Services
 
         public async Task<LocationDTO> CreateNewEvent(Event userEvent, UIImage userImage)
         {
+            var IC = new ImageConverter();
+            userEvent.Picture = IC.ConvertImageToBytes(userImage);
+            
             var EventJson = JsonConvert.SerializeObject(userEvent);
             var content = new StringContent(EventJson, Encoding.UTF8, "application/json");
             var response = _client.PostAsync("events/", content).Result;
             HttpContent responseContent = response.Content;
             string result = await responseContent.ReadAsStringAsync();
             LocationDTO EventLocation = JsonConvert.DeserializeObject<LocationDTO>(result);
-            AttachUserPicture(userImage, EventLocation.EventID);
+            //AttachUserPicture(userImage, EventLocation.EventID);
             return EventLocation;
 
-        }
-
-        private void AttachUserPicture(UIImage userImage, int EventID)
-        {
-            var IC = new ImageConverter();
-            var ImageByteArray = IC.ConvertImageToBytes(userImage);
-            var ImageJson = JsonConvert.SerializeObject(ImageByteArray);
-            var content = new StringContent(ImageJson, Encoding.UTF8, "applcaition.json");
-            var response = _client.PostAsync("events/image" + EventID, content);
-
-            //var requestContent = new MultipartFormDataContent();
-            //ByteArrayContent content = new ByteArrayContent(ImageByteArray);
-            //requestContent.Add(content);
-            //var result = _client.PostAsync("events/image/" + EventID, content);
         }
     }
 }
