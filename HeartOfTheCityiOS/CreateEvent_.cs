@@ -11,7 +11,6 @@ using HOTCAPILibrary.DTOs;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Runtime.InteropServices;
-using HOTCLibrary.Models.ViewModels;
 
 namespace HeartOfTheCityiOS
 {
@@ -20,6 +19,7 @@ namespace HeartOfTheCityiOS
         public Event userEvent { get; set; }
         public HttpClient _client { get; set; }
         public UIImage userImage { get;set; }
+        public bool isPublic = false;
 
         UIImagePickerController galleryImagePicker;
 
@@ -38,9 +38,9 @@ namespace HeartOfTheCityiOS
             var stackView = new UIStackView
             {
                 Axis = UILayoutConstraintAxis.Vertical,
-                Alignment = UIStackViewAlignment.Center,
+                Alignment = UIStackViewAlignment.Fill,
                 Distribution = UIStackViewDistribution.EqualSpacing,
-                Spacing = 10,
+                Spacing = 25,
                 TranslatesAutoresizingMaskIntoConstraints = false
             };
 
@@ -76,6 +76,11 @@ namespace HeartOfTheCityiOS
                 Frame = new CGRect(25, 50, 35, 15),
                 Placeholder = "ZipCode"
             };
+            var DescField = new UITextField
+            {
+                Frame = new CGRect(25, 50, 35, 15),
+                Placeholder = "Event Description"
+            };
             var SubmitButton = new UIButton(UIButtonType.System)
             {
                 Frame = new CGRect(25, 90, 300, 30)
@@ -84,6 +89,17 @@ namespace HeartOfTheCityiOS
             {
                 Frame = new CGRect(25, 60, 300, 30)
             };
+            var StateLabel = new UILabel()
+            {
+                Text = "Press the button to choose between Public or Private.",
+                TextAlignment = UITextAlignment.Center
+
+            };
+            var isPublicButton = new UIButton(UIButtonType.System)
+            {
+                Frame = new CGRect(25, 90, 300, 30)
+            };
+
 
             UIDatePicker DatePicker = new UIDatePicker(new CGRect(
                     UIScreen.MainScreen.Bounds.X - UIScreen.MainScreen.Bounds.Width,
@@ -101,6 +117,7 @@ namespace HeartOfTheCityiOS
 
             SubmitButton.SetTitle("Submit Event", UIControlState.Normal);
             GetImage.SetTitle("Pick An Image", UIControlState.Normal);
+            isPublicButton.SetTitle("Private Event", UIControlState.Normal);
             
 
             //Start putting the components together to build the view.
@@ -111,7 +128,10 @@ namespace HeartOfTheCityiOS
             stackView.AddArrangedSubview(StateField);
             stackView.AddArrangedSubview(CountryField);
             stackView.AddArrangedSubview(ZipField);
+            stackView.AddArrangedSubview(DescField);
             stackView.AddArrangedSubview(DatePicker);
+            stackView.AddArrangedSubview(StateLabel);
+            stackView.AddArrangedSubview(isPublicButton);
             stackView.AddArrangedSubview(GetImage);
             stackView.AddArrangedSubview(SubmitButton);
 
@@ -148,10 +168,15 @@ namespace HeartOfTheCityiOS
                 userEvent.ZipCode = int.Parse(ZipField.Text);
                 DateTime.SpecifyKind((DateTime)DatePicker.Date, DateTimeKind.Utc).ToLocalTime();
                 userEvent.DateOfEvent = (DateTime)DatePicker.Date;
+                userEvent.isPublic = isPublic;
                 var geoCoder = new CLGeocoder();
                 var location = new CLLocation();
-                string worldAddress = userEvent.Address + ", " + userEvent.City + ", ";
-                var placemarks = geoCoder.GeocodeAddressAsync(userEvent.Address);
+                string worldAddress = userEvent.Address + ", " 
+                + userEvent.City + ", " 
+                + userEvent.State + ", " 
+                + userEvent.Country + ", " 
+                + userEvent.ZipCode.ToString();
+                var placemarks = geoCoder.GeocodeAddressAsync(worldAddress);
                 await placemarks.ContinueWith((addresses) =>
                 {
                     foreach (var address in addresses.Result)
@@ -161,6 +186,7 @@ namespace HeartOfTheCityiOS
                 });
                 userEvent.Lat = location.Coordinate.Latitude;
                 userEvent.Long = location.Coordinate.Longitude;
+                userEvent.Description = DescField.Text;
 
                 EventService ES = new EventService(_client);
                 if(userImage != null)
@@ -185,6 +211,21 @@ namespace HeartOfTheCityiOS
             GetImage.TouchUpInside += (object sender, EventArgs e) =>
             {
                 ShowSelectPicPopup();
+            };
+
+            //Button function #3: Public/Private toggle function
+            isPublicButton.TouchUpInside += (object sender, EventArgs e) =>
+            {
+                if(isPublic == false)
+                {
+                    isPublic = true;
+                    isPublicButton.SetTitle("Public Event", UIControlState.Normal);
+                }
+                else
+                {
+                    isPublic = false;
+                    isPublicButton.SetTitle("Private Event", UIControlState.Normal);
+                }
             };
             
         }

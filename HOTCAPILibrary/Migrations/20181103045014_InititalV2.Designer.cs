@@ -11,9 +11,10 @@ using System;
 namespace HOTCAPILibrary.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181103045014_InititalV2")]
+    partial class InititalV2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -71,7 +72,7 @@ namespace HOTCAPILibrary.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("HOTCiOSLibrary.Models.Event", b =>
+            modelBuilder.Entity("HOTCLibrary.Models.Event", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
@@ -80,11 +81,7 @@ namespace HOTCAPILibrary.Migrations
 
                     b.Property<string>("City");
 
-                    b.Property<string>("Country");
-
                     b.Property<DateTime>("DateOfEvent");
-
-                    b.Property<string>("Description");
 
                     b.Property<string>("EventName");
 
@@ -94,11 +91,7 @@ namespace HOTCAPILibrary.Migrations
 
                     b.Property<byte[]>("Picture");
 
-                    b.Property<string>("State");
-
                     b.Property<int>("ZipCode");
-
-                    b.Property<bool>("isPublic");
 
                     b.HasKey("ID");
 

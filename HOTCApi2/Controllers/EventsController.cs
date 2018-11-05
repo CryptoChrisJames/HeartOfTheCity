@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using HOTCAPILibrary.Data;
 using HOTCAPILibrary.DTOs;
 using HOTCAPILibrary.Managers;
-using HOTCLibrary.Models;
+using HOTCAPILibrary.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Net.Http;
-using System.Web;
 
 namespace HOTCApi.Controllers
 {
@@ -46,8 +41,7 @@ namespace HOTCApi.Controllers
         public async Task<LocationDTO> Post([FromBody]Event newEvent)
         {
             var newEventLocation = new LocationDTO();
-            newEventLocation = await _EM.CreateNewEvent(newEvent);
-            return newEventLocation;
+            return await _EM.CreateNewEvent(newEvent);
         }
 
         [HttpPut]
