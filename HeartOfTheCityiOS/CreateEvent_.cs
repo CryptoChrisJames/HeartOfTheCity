@@ -191,14 +191,14 @@ namespace HeartOfTheCityiOS
                 EventService ES = new EventService(_client);
                 if(userImage != null)
                 {
-                    LocationDTO EventLocation = await ES.CreateNewEvent(userEvent, userImage);
+                    Event EventLocation = await ES.CreateNewEvent(userEvent, userImage);
                     var ShowEvent = new SubmittedEvent(EventLocation, _client);
                     this.NavigationController.PopViewController(true);
                     this.NavigationController.PushViewController(ShowEvent, true);
                 }
                 else
                 {
-                    LocationDTO EventLocation = await ES.CreateNewEvent(userEvent);
+                    Event EventLocation = await ES.CreateNewEvent(userEvent);
                     var ShowEvent = new SubmittedEvent(EventLocation, _client);
                     this.NavigationController.PopViewController(true);
                     this.NavigationController.PushViewController(ShowEvent, true);
@@ -312,4 +312,5 @@ namespace HeartOfTheCityiOS
             galleryImagePicker.DismissViewController(true, () => { });
         }
     }
+    
 }

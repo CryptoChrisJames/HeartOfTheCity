@@ -9,5 +9,6 @@ namespace HOTCAPILibrary.DTOs
         public int EventID { get; set; }
         public double Lat { get; set; }
         public double Long { get; set; }
+        public string EventName { get; set; }
     }
 }

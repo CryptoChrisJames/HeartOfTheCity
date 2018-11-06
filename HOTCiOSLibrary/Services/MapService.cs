@@ -9,6 +9,7 @@ using MapKit;
 using System.Net.Http;
 using HOTCiOSLibrary.Services;
 using HOTCAPILibrary.DTOs;
+using HOTCiOSLibrary.Models;
 
 namespace HOTCiOSLibrary
 {
@@ -50,6 +51,13 @@ namespace HOTCiOSLibrary
         public void CenterToCurrentLocation(MKMapView map, LocationDTO eventLocation)
         {
             var target = new CLLocationCoordinate2D(eventLocation.Lat, eventLocation.Long);
+            var currentregion = MKCoordinateRegion.FromDistance(target, 9000, 9000);
+            map.SetRegion(currentregion, animated: false);
+        }
+
+        public void CenterToCurrentLocation(MKMapView map, Event currentEvent)
+        {
+            var target = new CLLocationCoordinate2D(currentEvent.Lat, currentEvent.Long);
             var currentregion = MKCoordinateRegion.FromDistance(target, 9000, 9000);
             map.SetRegion(currentregion, animated: false);
         }

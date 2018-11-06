@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using HOTCAPILibrary.DTOs;
+using HOTCiOSLibrary.Models;
+using HOTCLibrary.Logic;
+using Newtonsoft.Json;
 using System.Net.Http;
 using System.Text;
-
-using Foundation;
-using HOTCiOSLibrary.Models;
-using UIKit;
-using Newtonsoft.Json;
-using System.Net.Http.Headers;
-using HOTCAPILibrary.DTOs;
 using System.Threading.Tasks;
-using HOTCLibrary.Logic;
+using UIKit;
 
 namespace HOTCiOSLibrary.Services
 {
@@ -24,19 +18,19 @@ namespace HOTCiOSLibrary.Services
             _client = client;
         }
 
-        public async Task<LocationDTO> CreateNewEvent(Event userEvent)
+        public async Task<Event> CreateNewEvent(Event userEvent)
         {
             var EventJson = JsonConvert.SerializeObject(userEvent);
             var content = new StringContent(EventJson, Encoding.UTF8, "application/json");
             var response = _client.PostAsync("events/", content).Result;
             HttpContent responseContent = response.Content;
             string result = await responseContent.ReadAsStringAsync();
-            LocationDTO EventLocation = JsonConvert.DeserializeObject<LocationDTO>(result);
+            Event EventLocation = JsonConvert.DeserializeObject<Event>(result);
             return EventLocation;
 
         }
 
-        public async Task<LocationDTO> CreateNewEvent(Event userEvent, UIImage userImage)
+        public async Task<Event> CreateNewEvent(Event userEvent, UIImage userImage)
         {
             var IC = new ImageConverter();
             userEvent.Picture = IC.ConvertImageToBytes(userImage);
@@ -46,7 +40,7 @@ namespace HOTCiOSLibrary.Services
             var response = _client.PostAsync("events/", content).Result;
             HttpContent responseContent = response.Content;
             string result = await responseContent.ReadAsStringAsync();
-            LocationDTO EventLocation = JsonConvert.DeserializeObject<LocationDTO>(result);
+            Event EventLocation = JsonConvert.DeserializeObject<Event>(result);
             //AttachUserPicture(userImage, EventLocation.EventID);
             return EventLocation;
 

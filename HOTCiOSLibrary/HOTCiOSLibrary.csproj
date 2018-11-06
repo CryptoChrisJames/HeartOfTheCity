@@ -223,6 +223,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DTOs\LocationDTO.cs" />
+    <Compile Include="Logic\HOTCAnnotation.cs" />
+    <Compile Include="Logic\HOTCAnnotationView.cs" />
     <Compile Include="Logic\ImageConverter.cs" />
     <Compile Include="Models\Event.cs" />
     <Compile Include="Services\EventService.cs" />

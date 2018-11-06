@@ -19,14 +19,11 @@ namespace HOTCAPILibrary.Managers
             _context = context;
         }
 
-        public async Task<LocationDTO> CreateNewEvent(Event newEvent)
+        public async Task<Event> CreateNewEvent(Event newEvent)
         {
             await _context.Events.AddAsync(newEvent);
             await _context.SaveChangesAsync();
-            var location = new LocationDTO();
-            location.Lat = newEvent.Lat;
-            location.Long = newEvent.Long;
-            location.EventID = newEvent.ID;
+            var location = newEvent;
             return location;
         }
 
