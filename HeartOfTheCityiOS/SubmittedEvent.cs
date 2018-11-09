@@ -27,7 +27,7 @@ namespace HeartOfTheCityiOS
         {
             _client = client;
             _eventLocation = EventLocation;
-            _hOTCMapDelegate = new HOTCMapDelegate(_eventLocation.EventName, new CLLocationCoordinate2D(_eventLocation.Lat, _eventLocation.Long));
+            _hOTCMapDelegate = new HOTCMapDelegate();
         }
 
         public override void DidReceiveMemoryWarning()
@@ -64,14 +64,7 @@ namespace HeartOfTheCityiOS
         }
         public class HOTCMapDelegate : MKMapViewDelegate
         {
-            public string Title;
-            CLLocationCoordinate2D Coordinates;
-
-            public HOTCMapDelegate(string title, CLLocationCoordinate2D coordinates)
-            {
-                Title = title;
-                Coordinates = coordinates;
-            }
+            public string AnnotationID = "HOTCAnnotation";
 
             public override MKAnnotationView GetViewForAnnotation(MKMapView mapView, IMKAnnotation annotation)
             {
@@ -84,11 +77,12 @@ namespace HeartOfTheCityiOS
                 
                 if(annotation is HOTCAnnotation)
                 {
-                    AnnotationView = mapView.DequeueReusableAnnotation(Title);
+                    AnnotationView = mapView.DequeueReusableAnnotation(AnnotationID);
 
                     if(AnnotationView == null)
                     {
-                        AnnotationView = new MKAnnotationView();
+                        AnnotationView = new MKMarkerAnnotationView(annotation, AnnotationID);
+                        AnnotationView.CanShowCallout = true;
                     }
                 }
                 return AnnotationView;
