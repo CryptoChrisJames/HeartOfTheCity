@@ -81,8 +81,10 @@ namespace HeartOfTheCityiOS
 
                     if(AnnotationView == null)
                     {
-                        AnnotationView = new MKMarkerAnnotationView(annotation, AnnotationID);
+                        AnnotationView = new MKAnnotationView(annotation, AnnotationID);
+                        AnnotationView.Image = UIImage.FromFile("Resources/Images/heart.png");
                         AnnotationView.CanShowCallout = true;
+                        AnnotationView.RightCalloutAccessoryView = UIButton.FromType(UIButtonType.RoundedRect);
                     }
                 }
                 return AnnotationView;
