@@ -22,12 +22,21 @@ namespace HOTCApi.Controllers
 
         }
 
-        // GET api/values
+        // GET api/values - for testing 
         [HttpGet]
         public IEnumerable<string> Get()
         {
             return new string[] { "value1", "value2" };
         }
+
+        [HttpGet]
+        [Route("{City}")]
+        public List<Event> GetLocalEventsAtStartup(string City)
+        {
+            List<Event> LocalEvents = new List<Event>();
+            return _EM.GetLocalEvents(City);
+        }
+
 
         // GET api/values/5
         [HttpGet("{id}")]

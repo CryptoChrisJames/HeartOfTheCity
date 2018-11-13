@@ -22,7 +22,7 @@ namespace HeartOfTheCityiOS
         private MKMapView _map { get; set; }
         public HttpClient _client { get; set; }
         private EventService _eventservice { get; set; }
-        public List<Event> _localEvents { get; set; }
+        public List<Event> _Events { get; set; }
 
         public MapViewController (HttpClient client, CLLocationManager locationManager) : base ()
         {
@@ -32,22 +32,21 @@ namespace HeartOfTheCityiOS
             _mapservice = new MapService(_client);
             _eventservice = new EventService(_client);
             _map = _mapservice.GetMapView();
-            LocationDTO currentLocation = new LocationDTO()
-            {
-                Lat = _locationManager.Location.Coordinate.Latitude,
-                Long = _locationManager.Location.Coordinate.Longitude
-            };
-            _localEvents = _eventservice.GetLocalEvents(currentLocation);
+            _Events = new List<Event>(); 
             
         }
 
-        public override void ViewDidLoad ()
+        public override async void ViewDidLoad ()
         {
             base.ViewDidLoad();
             if (CLLocationManager.LocationServicesEnabled)
             {
                 _locationservice.CurrentLocation(_locationManager);
                 _mapservice.ZoomToCurrentLocation(_map, _locationManager);
+                CLLocation currentLocation = new CLLocation
+                    (_locationManager.Location.Coordinate.Latitude,
+                    _locationManager.Location.Coordinate.Longitude);
+                _Events = await _eventservice.GetLocalEvents(currentLocation);
             }
             View.AddSubview(_map);
 

@@ -35,5 +35,16 @@ namespace HOTCAPILibrary.Managers
             _context.Events.Update(currentEvent);
             _context.SaveChanges();
         }
+
+        public List<Event> GetLocalEvents(string city)
+        {
+            List<Event> LocalEvents = _context
+                .Events
+                .Where(e => e.City == city)
+                .Take(10)
+                .ToList();
+            return LocalEvents;
+
+        }
     }
 }
