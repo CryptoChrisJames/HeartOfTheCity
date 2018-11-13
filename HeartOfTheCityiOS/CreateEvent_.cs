@@ -20,13 +20,15 @@ namespace HeartOfTheCityiOS
         public HttpClient _client { get; set; }
         public UIImage userImage { get;set; }
         public bool isPublic = false;
+        public CLLocationManager _locationmanager { get; set; }
 
         UIImagePickerController galleryImagePicker;
 
-        public CreateEvent_ (HttpClient client) : base ()
+        public CreateEvent_ (HttpClient client, CLLocationManager LM) : base ()
         {
             _client = client;
             userEvent = new Event();
+            _locationmanager = LM;
         }
 
         public override void ViewDidLoad()
@@ -192,14 +194,14 @@ namespace HeartOfTheCityiOS
                 if(userImage != null)
                 {
                     Event EventLocation = await ES.CreateNewEvent(userEvent, userImage);
-                    var ShowEvent = new SubmittedEvent(EventLocation, _client);
+                    var ShowEvent = new SubmittedEvent(EventLocation, _client, _locationmanager);
                     this.NavigationController.PopViewController(true);
                     this.NavigationController.PushViewController(ShowEvent, true);
                 }
                 else
                 {
                     Event EventLocation = await ES.CreateNewEvent(userEvent);
-                    var ShowEvent = new SubmittedEvent(EventLocation, _client);
+                    var ShowEvent = new SubmittedEvent(EventLocation, _client, _locationmanager);
                     this.NavigationController.PopViewController(true);
                     this.NavigationController.PushViewController(ShowEvent, true);
                 }

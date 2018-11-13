@@ -1,4 +1,5 @@
-﻿using Foundation;
+﻿using CoreLocation;
+using Foundation;
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -12,7 +13,9 @@ namespace HeartOfTheCityiOS
     public class AppDelegate : UIApplicationDelegate
     {
         // class-level declarations
-        public HttpClient appClient; 
+        public HttpClient appClient;
+        public CLLocationManager locationManager;
+
         public override UIWindow Window
         {
             get;
@@ -26,8 +29,11 @@ namespace HeartOfTheCityiOS
             appClient.DefaultRequestHeaders.Accept.Clear();
             appClient.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
+
+            locationManager = new CLLocationManager();
+
             Window = new UIWindow(UIScreen.MainScreen.Bounds);
-            var nav = new UINavigationController(new MapViewController(appClient));
+            var nav = new UINavigationController(new LoginPage(appClient, locationManager));
             Window.RootViewController = nav;
             Window.MakeKeyAndVisible();
             return true;

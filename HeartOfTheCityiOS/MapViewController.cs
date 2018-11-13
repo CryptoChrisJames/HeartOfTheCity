@@ -7,6 +7,10 @@ using HOTCiOSLibrary.Services;
 using MapKit;
 using System.Net.Http;
 using CoreGraphics;
+using CoreLocation;
+using System.Collections.Generic;
+using HOTCiOSLibrary.Models;
+using HOTCAPILibrary.DTOs;
 
 namespace HeartOfTheCityiOS
 {
@@ -14,29 +18,37 @@ namespace HeartOfTheCityiOS
     {
         private MapService _mapservice { get; set; }
         private LocationService _locationservice { get; set; }
+        public CLLocationManager _locationManager { get; set; }
         private MKMapView _map { get; set; }
         public HttpClient _client { get; set; }
         private EventService _eventservice { get; set; }
+        public List<Event> _localEvents { get; set; }
 
-        public MapViewController (HttpClient client) : base ()
+        public MapViewController (HttpClient client, CLLocationManager locationManager) : base ()
         {
             _client = client;
+            _locationservice = new LocationService();
+            _locationManager = locationManager;
+            _mapservice = new MapService(_client);
+            _eventservice = new EventService(_client);
+            _map = _mapservice.GetMapView();
+            LocationDTO currentLocation = new LocationDTO()
+            {
+                Lat = _locationManager.Location.Coordinate.Latitude,
+                Long = _locationManager.Location.Coordinate.Longitude
+            };
+            _localEvents = _eventservice.GetLocalEvents(currentLocation);
+            
         }
 
         public override void ViewDidLoad ()
         {
-            base.ViewDidLoad ();
-            //Services
-            EventService eventservice = new EventService(_client);
-            MapService MapService = new MapService(_client);
-            LocationService locationService = new LocationService(new CoreLocation.CLLocationManager());
-            locationService.CurrentLocation(locationService._locationManager);
-            _mapservice = MapService;
-            _locationservice = locationService;
-            _eventservice = eventservice;
-            var map = _mapservice.GetMapView();
-            _map = map;
-            MapService.CenterToCurrentLocation(_map, _locationservice);
+            base.ViewDidLoad();
+            if (CLLocationManager.LocationServicesEnabled)
+            {
+                _locationservice.CurrentLocation(_locationManager);
+                _mapservice.ZoomToCurrentLocation(_map, _locationManager);
+            }
             View.AddSubview(_map);
 
             //Create UI
@@ -50,12 +62,12 @@ namespace HeartOfTheCityiOS
 
             LocationButton.TouchUpInside += (object sender, EventArgs e) =>
             {
-                _mapservice.ZoomToCurrentLocation(_map, _locationservice);
+                _mapservice.ZoomToCurrentLocation(_map, _locationManager);
             };
 
             CreateEvent.TouchUpInside += (object sender, EventArgs e) =>
             {
-                var CreateEventController = new CreateEvent_(_client);
+                var CreateEventController = new CreateEvent_(_client, _locationManager);
                 this.NavigationController.PushViewController(CreateEventController, true);
             };
 
@@ -71,7 +83,7 @@ namespace HeartOfTheCityiOS
 
         partial void LocationButton_TouchUpInside(UIButton sender)
         {
-            _mapservice.ZoomToCurrentLocation(_map, _locationservice);
+            _mapservice.ZoomToCurrentLocation(_map, _locationManager);
         }
     }
 }

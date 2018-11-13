@@ -29,9 +29,8 @@ namespace HOTCiOSLibrary
             return map;
         }
 
-        public void CenterToCurrentLocation(MKMapView map, LocationService LS)
+        public void CenterToCurrentLocation(MKMapView map, CLLocationManager LM)
         {
-            var LM = LS._locationManager;
             var target = new CLLocationCoordinate2D
                 (LM.Location.Coordinate.Latitude,
                 LM.Location.Coordinate.Longitude);
@@ -39,9 +38,8 @@ namespace HOTCiOSLibrary
             map.SetRegion(currentregion, animated: false);
         }
 
-        public void ZoomToCurrentLocation(MKMapView map, LocationService LS)
+        public void ZoomToCurrentLocation(MKMapView map, CLLocationManager LM)
         {
-            var LM = LS._locationManager;
             var target = new CLLocationCoordinate2D(LM.Location.Coordinate.Latitude, LM.Location.Coordinate.Longitude);
             var currentregion = MKCoordinateRegion.FromDistance(target, 15000, 15000);
             map.SetRegion(currentregion, animated: true);

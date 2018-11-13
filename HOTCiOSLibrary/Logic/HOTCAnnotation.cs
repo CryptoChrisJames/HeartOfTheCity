@@ -23,5 +23,6 @@ namespace HOTCLibrary.Logic
         public override CLLocationCoordinate2D Coordinate => new CLLocationCoordinate2D(_currentEvent.Lat, _currentEvent.Long);
         public override string Title => _currentEvent.EventName;
         public override string Subtitle => _currentEvent.Description;
+        public Event CurrentEvent => _currentEvent;
     }
 }

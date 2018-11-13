@@ -19,15 +19,17 @@ namespace HeartOfTheCityiOS
     [Register("SubmittedEvent")]
     public class SubmittedEvent : UIViewController
     {
-        Event _eventLocation;
-        HttpClient _client;
-        HOTCMapDelegate _hOTCMapDelegate;
+        public Event _eventLocation;
+        public HttpClient _client;
+        public HOTCMapDelegate _hOTCMapDelegate;
+        public CLLocationManager _locationmanager;
 
-        public SubmittedEvent(Event EventLocation, HttpClient client)
+        public SubmittedEvent(Event EventLocation, HttpClient client, CLLocationManager LM)
         {
             _client = client;
             _eventLocation = EventLocation;
             _hOTCMapDelegate = new HOTCMapDelegate();
+            _locationmanager = LM;
         }
 
         public override void DidReceiveMemoryWarning()
@@ -43,8 +45,8 @@ namespace HeartOfTheCityiOS
 
             this.NavigationItem.SetHidesBackButton(true, false);
             MapService MapService = new MapService(_client);
-            LocationService locationService = new LocationService(new CoreLocation.CLLocationManager());
-            locationService.CurrentLocation(locationService._locationManager);
+            LocationService locationService = new LocationService();
+            locationService.CurrentLocation(_locationmanager);
             var map = MapService.GetMapView();
             MapService.CenterToCurrentLocation(map, _eventLocation);
             map.AddAnnotations(new HOTCAnnotation(_eventLocation));
@@ -82,9 +84,9 @@ namespace HeartOfTheCityiOS
                     if(AnnotationView == null)
                     {
                         AnnotationView = new MKAnnotationView(annotation, AnnotationID);
-                        AnnotationView.Image = UIImage.FromFile("Resources/Images/heart.png");
+                        AnnotationView.Image = UIImage.FromFile("heart.png");
                         AnnotationView.CanShowCallout = true;
-                        AnnotationView.RightCalloutAccessoryView = UIButton.FromType(UIButtonType.RoundedRect);
+                        AnnotationView.RightCalloutAccessoryView = UIButton.FromType(UIButtonType.DetailDisclosure);
                     }
                 }
                 return AnnotationView;

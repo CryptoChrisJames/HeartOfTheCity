@@ -2,6 +2,8 @@
 using HOTCiOSLibrary.Models;
 using HOTCLibrary.Logic;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -44,6 +46,11 @@ namespace HOTCiOSLibrary.Services
             //AttachUserPicture(userImage, EventLocation.EventID);
             return EventLocation;
 
+        }
+
+        public List<Event> GetLocalEvents(LocationDTO currentLocation)
+        {
+            throw new NotImplementedException();
         }
     }
 }
