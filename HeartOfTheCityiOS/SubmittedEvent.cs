@@ -13,6 +13,7 @@ using CoreLocation;
 using CoreGraphics;
 using HOTCLibrary.Logic;
 using HOTCiOSLibrary.Models;
+using HOTCLibrary.Logic.Annotation;
 
 namespace HeartOfTheCityiOS
 {
@@ -21,14 +22,12 @@ namespace HeartOfTheCityiOS
     {
         public Event _eventLocation;
         public HttpClient _client;
-        public HOTCMapDelegate _hOTCMapDelegate;
         public CLLocationManager _locationmanager;
 
         public SubmittedEvent(Event EventLocation, HttpClient client, CLLocationManager LM)
         {
             _client = client;
             _eventLocation = EventLocation;
-            _hOTCMapDelegate = new HOTCMapDelegate();
             _locationmanager = LM;
         }
 
@@ -53,7 +52,6 @@ namespace HeartOfTheCityiOS
             var CancelButton = new UIButton(UIButtonType.System);
             CancelButton.Frame = new CGRect(25, 500, 300, 150);
             CancelButton.SetTitle("Cancel", UIControlState.Normal);
-            map.Delegate = _hOTCMapDelegate;
             View.AddSubview(map);
             View.AddSubview(CancelButton);
 
@@ -61,36 +59,6 @@ namespace HeartOfTheCityiOS
             {
                 this.NavigationController.PopViewController(true);
             };
-
-
-        }
-        public class HOTCMapDelegate : MKMapViewDelegate
-        {
-            public string AnnotationID = "HOTCAnnotation";
-
-            public override MKAnnotationView GetViewForAnnotation(MKMapView mapView, IMKAnnotation annotation)
-            {
-                MKAnnotationView AnnotationView = null;
-
-                if(annotation is MKUserLocation)
-                {
-                    return null;
-                }
-                
-                if(annotation is HOTCAnnotation)
-                {
-                    AnnotationView = mapView.DequeueReusableAnnotation(AnnotationID);
-
-                    if(AnnotationView == null)
-                    {
-                        AnnotationView = new MKAnnotationView(annotation, AnnotationID);
-                        AnnotationView.Image = UIImage.FromFile("heart.png");
-                        AnnotationView.CanShowCallout = true;
-                        AnnotationView.RightCalloutAccessoryView = UIButton.FromType(UIButtonType.DetailDisclosure);
-                    }
-                }
-                return AnnotationView;
-            }
         }
     }
 }

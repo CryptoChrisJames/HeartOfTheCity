@@ -9,20 +9,22 @@ using MapKit;
 using HOTCiOSLibrary.Models;
 using CoreLocation;
 
-namespace HOTCLibrary.Logic
+namespace HOTCLibrary.Logic.Annotation
 {
     public class HOTCAnnotation : MKAnnotation
     {
-        public Event _currentEvent;
-
         public HOTCAnnotation(Event currentEvent)
         {
             _currentEvent = currentEvent;
         }
 
+        public Event _currentEvent
+        {
+            get; private set;
+        }
+
         public override CLLocationCoordinate2D Coordinate => new CLLocationCoordinate2D(_currentEvent.Lat, _currentEvent.Long);
         public override string Title => _currentEvent.EventName;
         public override string Subtitle => _currentEvent.Description;
-        public Event CurrentEvent => _currentEvent;
     }
 }

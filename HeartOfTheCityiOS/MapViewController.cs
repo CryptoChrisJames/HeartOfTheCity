@@ -11,6 +11,8 @@ using CoreLocation;
 using System.Collections.Generic;
 using HOTCiOSLibrary.Models;
 using HOTCAPILibrary.DTOs;
+using HOTCLibrary.Logic.Annotation;
+using HOTCLibrary.Logic;
 
 namespace HeartOfTheCityiOS
 {
@@ -23,6 +25,7 @@ namespace HeartOfTheCityiOS
         public HttpClient _client { get; set; }
         private EventService _eventservice { get; set; }
         public List<Event> _Events { get; set; }
+        public CLLocation _currentLocation { get; set; }
 
         public MapViewController (HttpClient client, CLLocationManager locationManager) : base ()
         {
@@ -32,21 +35,20 @@ namespace HeartOfTheCityiOS
             _mapservice = new MapService(_client);
             _eventservice = new EventService(_client);
             _map = _mapservice.GetMapView();
-            _Events = new List<Event>(); 
-            
+            _Events = new List<Event>();
+            _currentLocation = new CLLocation
+                (_locationManager.Location.Coordinate.Latitude,
+                _locationManager.Location.Coordinate.Longitude);
         }
 
-        public override async void ViewDidLoad ()
+        public override void ViewDidLoad ()
         {
             base.ViewDidLoad();
+            this.NavigationItem.SetHidesBackButton(true, false);
             if (CLLocationManager.LocationServicesEnabled)
             {
                 _locationservice.CurrentLocation(_locationManager);
                 _mapservice.ZoomToCurrentLocation(_map, _locationManager);
-                CLLocation currentLocation = new CLLocation
-                    (_locationManager.Location.Coordinate.Latitude,
-                    _locationManager.Location.Coordinate.Longitude);
-                _Events = await _eventservice.GetLocalEvents(currentLocation);
             }
             View.AddSubview(_map);
 
@@ -74,6 +76,22 @@ namespace HeartOfTheCityiOS
             View.AddSubview(CreateEvent);
         }
 
+        public override async void ViewWillAppear(bool animated)
+        {
+            base.ViewWillAppear(animated);
+            
+            if(_Events.Count == 0 )
+            {
+                _Events = await _eventservice.GetLocalEvents(_currentLocation);
+            }
+
+            foreach(Event currentEvent in _Events)
+            {
+                _map.AddAnnotation(new HOTCAnnotation(currentEvent));
+            }
+            _map.GetViewForAnnotation += GetAnnotationView;
+        }
+
         public override void DidReceiveMemoryWarning ()
         {
             base.DidReceiveMemoryWarning ();
@@ -83,6 +101,20 @@ namespace HeartOfTheCityiOS
         partial void LocationButton_TouchUpInside(UIButton sender)
         {
             _mapservice.ZoomToCurrentLocation(_map, _locationManager);
+        }
+        
+        public MKAnnotationView GetAnnotationView (MKMapView mapView, IMKAnnotation annotation)
+        {
+            MKAnnotationView annotationView = mapView.DequeueReusableAnnotation("AnnocationID");
+
+            if (annotationView == null)
+            {
+                annotationView = new HOTCAnnotationView(annotation, "AnnotationID");
+            }
+
+            annotationView.Annotation = (MKAnnotation)annotation;
+
+            return annotationView;
         }
     }
 }
